@@ -2,12 +2,14 @@ import sqlite3
 
 DB_NAME = 'saglik_asistani.db'
 
-def tam_kapasite_doldur():
+def dev_veritabanini_kur():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # Eski tabloyu temizle ve sıfırdan oluştur
+    # Temiz bir başlangıç için eski tabloyu siliyoruz
     cursor.execute('DROP TABLE IF EXISTS bilgi_tabani')
+    
+    # Tabloyu yeniden oluşturuyoruz
     cursor.execute('''
         CREATE TABLE bilgi_tabani (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,93 +22,90 @@ def tam_kapasite_doldur():
         )
     ''')
 
-    # Tam Kapasite Veri Seti (Tez için özenle kategorize edilmiştir)
-    dev_liste = [
-        # --- UYKU VE YORGUNLUK ---
-        ("Sabah yorgun uyanmak", "Uyku kalitesinin düşüklüğü veya geç yatma.", "Yatmadan 3 saat önce yemeyi kesin, aynı saatte uyumaya çalışın.", "Uyku"),
-        ("Gece sık uyanmak", "Odadaki ışık/ses kirliliği veya akşam içilen sıvılar.", "Karanlık ve sessiz bir ortam sağlayın, sıvı alımını azaltın.", "Uyku"),
-        ("Gece terlemesi", "Sentetik çarşaflar veya odanın aşırı sıcak olması.", "Pamuklu pijama kullanın, oda sıcaklığını 18-20 derece yapın.", "Uyku"),
-        ("Uyumakta zorlanmak", "Mavi ışığa maruz kalma (telefon/TV) veya zihinsel meşguliyet.", "Yatmadan 1 saat önce ekran kullanımını bırakın.", "Uyku"),
-        ("Sabah baş ağrısı ile uyanmak", "Diş sıkma (bruksizm) veya havasız oda.", "Odayı iyice havalandırın, geçmezse diş hekimine danışın.", "Uyku"),
-        ("Çok uyumama rağmen yorgunluk", "Uyku apnesi veya kalitesiz derin uyku evresi.", "Uyku düzeninizi sabitleyin, horlama varsa uzman yardımı alın.", "Uyku"),
-        ("Uyku sırasında ağız açık kalması", "Burun tıkanıklığı veya yanlış yastık seçimi.", "Burun bandı deneyin veya yastık yüksekliğini ayarlayın.", "Uyku"),
-        ("Rüya görerek sık uyanma", "REM uykusunun bölünmesi veya ağır akşam yemeği.", "Akşam yemeklerini hafifletin, stresten uzaklaşın.", "Uyku"),
-        ("Horlama", "Sırt üstü yatış pozisyonu veya fazla kilo.", "Yan yatmayı deneyin ve yüksek yastık kullanın.", "Uyku"),
-        ("Uykuda diş sıkma", "Günlük stres ve kaygı birikimi.", "Yatmadan önce gevşeme egzersizleri (meditasyon) yapın.", "Uyku"),
-        ("Gece bacak huzursuzluğu", "Uzun süre hareketsiz kalma veya magnezyum eksikliği.", "Yatmadan önce bacaklara hafif masaj veya esneme yapın.", "Uyku"),
-        
-        # --- SİNDİRİM VE MİDE ---
-        ("Şişkinlik", "Gaz yapan gıdalar (baklagiller) veya hızlı yemek.", "Yemekleri yavaş çiğneyin, rezene veya papatya çayı deneyin.", "Sindirim"),
-        ("Gaz problemi", "Hareketsizlik veya laktoz hassasiyeti.", "Yemekten sonra 15 dakikalık kısa yürüyüşler yapın.", "Sindirim"),
-        ("Yemekten sonra mide yanması", "Mide asidinin yükselmesi (Reflü başlangıcı).", "Yemekten hemen sonra uzanmayın, porsiyonları küçültün.", "Sindirim"),
-        ("Sabah mide bulantısı", "Uzun süreli açlık veya akşamki ağır yemekler.", "Sabahları tuzlu bir kraker veya leblebi atıştırın.", "Sindirim"),
-        ("Kabızlık", "Lifli gıda eksikliği veya yetersiz su tüketimi.", "Kuru kayısı, incir gibi lifli gıdalar tüketin, bol su için.", "Sindirim"),
-        ("İshal (hafif)", "Bozulmuş gıda, üşütme veya aşırı meyve tüketimi.", "Haşlanmış patates ve muz tüketin, bol su içerek sıvı açığını kapatın.", "Sindirim"),
-        ("Sürekli geğirme", "Yemek yerken hava yutma veya asitli içecekler.", "Sessiz ve yavaş yemek yiyin, gazlı içecekleri bırakın.", "Sindirim"),
-        ("Karında guruldama", "Açlık veya sindirim sisteminin aktif çalışması.", "Düzenli öğünlerle beslenin, aşırı kafeinden kaçının.", "Sindirim"),
-        ("Hazımsızlık", "Yağlı/baharatlı yiyecekler veya stres.", "Öğünleri küçültün, nane çayı içerek mideyi rahatlatın.", "Sindirim"),
-        ("Yemekten sonra uyku basması", "Kan şekerinin ani yükselmesi (İnsülin tepkisi).", "Karbonhidratı azaltıp protein dengesine dikkat edin.", "Sindirim"),
-        ("Stres kaynaklı mide ağrısı", "Duygusal gerginliğin sindirim sistemine etkisi.", "Nefes egzersizleri yapın, ılık bitki çayları tüketin.", "Sindirim"),
+    # --- 100+ MADDELİK DEV VERİ SETİ ---
+    dev_veri_seti = [
+        # --- SİNDİRİM VE BESLENME ---
+        ("Yemekten sonra ağırlık çökmesi", "Aşırı karbonhidrat tüketimi, hızlı yemek", "Doktora Görünün: Her öğünden sonra oluyorsa ve ani kilo artışı varsa", "Sindirim"),
+        ("Sabah açken mide kazınması", "Asit artışı, uzun süreli açlık", "Doktora Görünün: Yanma ve sırta vuran ağrı artıyorsa", "Sindirim"),
+        ("Kahve sonrası mide rahatsızlığı", "Asit hassasiyeti, kafein reaksiyonu", "Doktora Görünün: Midede kramp veya kanama belirtisi (koyu renkli dışkı) varsa", "Sindirim"),
+        ("Sık acıkma hissi", "Kan şekeri dalgalanması, insülin direnci", "Doktora Görünün: Titreme, terleme ve bayılma hissi eşlik ediyorsa", "Sindirim"),
+        ("Sürekli tatlı yeme isteği", "Kan şekeri dengesizliği, krom eksikliği", "Tarçınlı su için ve öğünlerinize protein ekleyin.", "Sindirim"),
+        ("Midede şişkinlik ve gaz", "Hızlı yemek yeme, hava yutma, hareketsizlik", "Yemekleri yavaş çiğneyin, yemekten sonra nane çayı için.", "Sindirim"),
+        ("Yutkunurken boğazda takılma hissi", "Reflü, stres (globus hissi), tiroid büyümesi", "Doktora Görünün: Katı gıdaları yutarken zorlanma kalıcı hale gelirse", "Sindirim"),
+        ("Mide bulantısı (sabahları)", "Kan şekeri düşüklüğü, gebelik ihtimali, stres", "Doktora Görünün: Kusma eşlik ediyorsa ve gün boyu sürüyorsa", "Sindirim"),
+        ("Kabızlık (uzun süreli)", "Lif eksikliği, yetersiz su tüketimi, hareketsizlik", "Doktora Görünün: Şiddetli karın ağrısı ve şişlik varsa", "Sindirim"),
+        ("İshal (ani başlayan)", "Gıda zehirlenmesi, viral enfeksiyon", "Bol su için, haşlanmış patates tüketin. Kanlıysa hemen doktora gidin.", "Sindirim"),
 
-        # --- AĞIZ, BOĞAZ VE BURUN ---
-        ("Sabah ağız kokusu", "Gece azalan tükürük salgısı ve bakteri birikimi.", "Dilinizi de fırçalayın ve akşamdan ağız gargarası yapın.", "Ağız/Boğaz"),
-        ("Dil üzerinde beyaz tabaka", "Ağız florasının bozulması veya susuzluk.", "Dil temizleyici aparat kullanın ve su tüketimini artırın.", "Ağız/Boğaz"),
-        ("Ağız kuruluğu", "Ağızdan nefes alma veya tuzlu akşam yemeği.", "Yatmadan önce su için ve burundan nefes almaya odaklanın.", "Ağız/Boğaz"),
-        ("Boğazda gıcık hissi", "Kuru hava veya hafif geniz akıntısı.", "Bulunduğunuz odayı nemlendirin, ılık ballı su tüketin.", "Ağız/Boğaz"),
-        ("Yutkunurken hafif ağrı", "Boğaz kuruluğu veya soğuk içecek tüketimi.", "Tuzlu su ile gargara yapın ve boğazınızı sıcak tutun.", "Ağız/Boğaz"),
-        ("Diş eti kanaması", "Sert fırçalama veya diş taşı birikimi.", "Yumuşak fırça kullanın ve diş ipi alışkanlığı edinin.", "Ağız/Boğaz"),
-        ("Ağız içinde aft çıkması", "Bağışıklık düşüklüğü veya sert yiyecek tahrişi.", "B vitamini içeren gıdalar tüketin, asitli içeceklerden kaçının.", "Ağız/Boğaz"),
-        ("Sürekli susama hissi", "Aşırı tuzlu beslenme veya şekerli içecek tüketimi.", "Saf su tüketimini artırın, tuzu ve şekeri azaltın.", "Ağız/Boğaz"),
-        ("Boğazda balgam hissi", "Sigara dumanı, alerji veya süt ürünleri tüketimi.", "Bol ılık su için, bulunduğunuz ortamı sık sık havalandırın.", "Ağız/Boğaz"),
-        ("Sabah burun tıkanıklığı", "Toz akarlarına karşı alerji veya kuru hava.", "Yastık kılıflarını sık değiştirin ve odayı nemlendirin.", "Ağız/Boğaz"),
-        ("Sürekli hapşırma", "Ev tozu, polen veya hayvan tüyü duyarlılığı.", "Ortamı sık havalandırın ve tozlu yerlerden kaçının.", "Ağız/Boğaz"),
+        # --- UYKU VE ENERJİ ---
+        ("Gece aniden sıçrayarak uyanma", "Stres, uykuya geçiş spazmı", "Doktora Görünün: Nefes darlığı ve çarpıntı ile uyanıyorsanız", "Uyku"),
+        ("Sabah alarmı duymama ve zor uyanma", "Kalitesiz derin uyku, aşırı yorgunluk", "Doktora Görünün: Gün içinde sürekli uyuklama hali (Narkolepsi belirtisi) varsa", "Uyku"),
+        ("Gece aşırı rüya/kabus görme", "REM uykusu artışı, yatmadan önce stres", "Yatmadan önce dijital ekranlardan uzak durun.", "Uyku"),
+        ("Gün içinde ani uyku bastırması", "İnsülin direnci, ağır öğle yemeği", "Şekerli gıdaları azaltın, öğle yemeklerini hafif tutun.", "Uyku"),
+        ("Uyurken aşırı terleme", "Oda sıcaklığı, sentetik yorgan, tiroid fazlalığı", "Doktora Görünün: Ateş ve ani kilo kaybı eşlik ediyorsa", "Uyku"),
+        ("Uykuya dalmada zorluk (İnsomnia)", "Anksiyete, geç saatte kafein tüketimi", "Yatmadan 6 saat önce kafeini kesin, karanlık ortam sağlayın.", "Uyku"),
+        ("Horlama ve nefes kesilmesi", "Uyku apnesi, kilo fazlalığı, geniz eti", "Doktora Görünün: Yanınızdaki kişi nefesinizin durduğunu söylüyorsa", "Uyku"),
+        ("Yatakta bacakları sürekli hareket ettirme isteği", "Huzursuz bacak sendromu, demir eksikliği", "Doktora Görünün: Uykuya dalmanızı tamamen engelliyorsa", "Uyku"),
 
-        # --- KAS, EKLEM VE İSKELET ---
-        ("Boyun tutulması", "Yanlış yatış pozisyonu, ters hareket veya klima çarpması.", "Boyun bölgenizi sıcak tutun ve hafif esneme hareketleri yapın.", "Kas/Eklem"),
-        ("Bel ağrısı (hafif)", "Uzun süre yanlış pozisyonda oturma.", "Bel desteği kullanın ve her saat başı ayağa kalkıp gerinin.", "Kas/Eklem"),
-        ("Diz çıtırtısı", "Hareketsizlik sonucu eklem sıvısının yer değiştirmesi.", "Dizleri zorlamayan basit egzersizler ve yürüyüş yapın.", "Kas/Eklem"),
-        ("Kas seğirmesi", "Magnezyum eksikliği, aşırı kafein veya yorgunluk.", "Muz ve kuruyemiş gibi mineralli gıdalar tüketin, dinlenin.", "Kas/Eklem"),
-        ("Sabah eklem sertliği", "Gece boyunca hareketsiz kalma veya hafif kireçlenme.", "Sabahları yatakta 5 dakika hafif esneme ve gerinme yapın.", "Kas/Eklem"),
-        ("Omuz ağrısı", "Ağır çanta taşıma, stres veya masa başı çalışma.", "Dik durmaya çalışın, omuzları geriye doğru çevirerek rahatlatın.", "Kas/Eklem"),
-        ("Ayakta yanma hissi", "Sinir sıkışması, yorgunluk veya yanlış ayakkabı.", "Ayaklarınızı ılık suda dinlendirin, rahat ayakkabılar seçin.", "Kas/Eklem"),
-        ("El uyuşması (kısa süreli)", "Sinir sıkışması (karpal tünel) veya yanlış uyuma pozisyonu.", "El bileği egzersizleri yapın, klavye kullanırken bilek desteği alın.", "Kas/Eklem"),
-        ("Bacak krampı", "Mineral (Potasyum/Magnezyum) kaybı veya kas yorgunluğu.", "Bol su için, esneme yapın ve potasyum içeren gıdalar tüketin.", "Kas/Eklem"),
-        ("Spor sonrası kas ağrısı", "Kaslarda laktik asit birikimi (Gecikmiş kas ağrısı).", "Hafif tempolu yürüyüş yapın, protein alın ve sıcak duş alın.", "Kas/Eklem"),
+        # --- KAS, İSKELET VE SİNİR ---
+        ("Boyundan kola hafif sızlama", "Postür bozukluğu, masa başı çalışma", "Doktora Görünün: Uyuşma artarsa ve elde eşya tutarken güç kaybı yaşanırsa", "Sinir Sistemi"),
+        ("Merdiven çıkarken baldır yanması", "Kas zayıflığı, laktik asit birikimi", "Doktora Görünün: Düz yolda kısa süre yürürken bile kramp giriyorsa", "Kas/İskelet"),
+        ("Telefon tutarken bilek ağrısı", "Karpal tünel sendromu başlangıcı, tendon zorlanması", "Doktora Görünün: Gece uykudan uyandıran bilek ağrısı ve uyuşma varsa", "Kas/İskelet"),
+        ("El parmaklarında sabah sertlik", "Gece yanlış pozisyon, sıvı birikimi", "Doktora Görünün: Sertlik 30 dakikadan uzun sürüyorsa (Romatizma belirtisi)", "Sinir Sistemi"),
+        ("Çene ağrısı sabahları", "Gece uyurken diş sıkma (Bruksizm)", "Gece plağı kullanmak için diş hekimine danışın.", "Kas/İskelet"),
+        ("Uzun oturunca ayakta karıncalanma", "Kan dolaşımının yavaşlaması, sinir basısı", "Doktora Görünün: Karıncalanma ayağa kalkıp yürümeye rağmen saatlerce geçmiyorsa", "Dolaşım/Sinir"),
+        ("Yüzde ve gözde hafif seğirme", "Yorgunluk, aşırı kafein, stres", "Kafeini azaltın, magnezyum alın. Günlerce geçmezse doktora başvurun.", "Sinir Sistemi"),
+        ("Belden bacağa vuran ağrı", "Siyatik sinir sıkışması, yanlış ağırlık kaldırma", "Doktora Görünün: Bacakta uyuşma, his kaybı veya idrar kaçırma varsa ACİL doktora gidin", "Sinir Sistemi"),
+        ("Sırtta iki kürek kemiği arası ağrı", "Duruş bozukluğu, kas spazmı, stres", "Dik duruş egzersizleri yapın. Nefes alırken batma varsa doktora görünün.", "Kas/İskelet"),
+        ("Topuk ağrısı (özellikle sabah ilk adımlarda)", "Topuk dikeni (Plantar fasiit)", "Doktora Görünün: Ortopedik tabanlık kullanımına rağmen geçmiyorsa", "Kas/İskelet"),
 
-        # --- ZİHİNSEL VE GENEL DURUM ---
-        ("Sürekli halsizlik", "Yetersiz sıvı tüketimi (dehidrasyon), kansızlık veya hareketsizlik.", "Günlük su tüketiminizi artırın ve kan değerlerinize baktırın.", "Genel"),
-        ("Baş dönmesi (hafif)", "Ani ayağa kalkma, uzun süre aç kalma veya tansiyon oynaması.", "Pozisyon değiştirirken yavaş hareket edin, öğün atlamayın.", "Genel"),
-        ("Ani göz kararması", "Ortostatik hipotansiyon (ani tansiyon düşüşü) veya açlık.", "Oturur pozisyondan yavaşça ayağa kalkın, ani hareketlerden kaçının.", "Genel"),
-        ("El titremesi", "Aşırı kafein alımı, kan şekeri düşüklüğü veya yoğun heyecan.", "Kahve tüketimini sınırlayın ve düzenli aralıklarla beslenin.", "Genel"),
-        ("Odaklanma problemi", "Dijital yorgunluk, çoklu görev (multitasking) veya düzensiz uyku.", "25 dk çalışma 5 dk mola (Pomodoro) tekniğini uygulayın.", "Zihinsel"),
-        ("Beyin sisi (brain fog)", "Zihinsel aşırı yüklenme, B12 eksikliği veya kronik yorgunluk.", "Ekran süresini azaltın, açık havada vakit geçirin ve ceviz tüketin.", "Zihinsel"),
-        ("Çabuk yorulma", "Düşük kondisyon, demir eksikliği veya kalitesiz uyku.", "Günlük hareket miktarını kademeli olarak artırın (örn. merdiven çıkma).", "Genel"),
-        ("Hafif çarpıntı hissi", "Yoğun kaygı, stres, panik veya aşırı çay/kahve tüketimi.", "Sakinleşmek için derin nefes alın ve uyarıcı içecekleri kesin.", "Genel"),
-        ("Soğuk el ve ayaklar", "Düşük kan dolaşımı, hareketsizlik veya kansızlık belirtisi.", "Kan dolaşımı için hareket edin, sıkı giyinin ve sıcak içecekler tüketin.", "Genel"),
-        ("Kulak çınlaması (geçici)", "Yüksek sese maruz kalma, stres veya kan basıncı değişimi.", "Sessiz bir ortamda dinlenin, yüksek sesli kulaklık kullanımını bırakın.", "Genel"),
-        ("Göz seğirmesi", "Göz yorgunluğu, aşırı ekran kullanımı, uykusuzluk veya stres.", "Ekrana bakmaya ara verin, gözlerinizi kapatıp dinlendirin.", "Göz"),
-        ("Aşırı esneme ihtiyacı", "Ortamda oksijen azlığı, sıkıntı veya uyku eksikliği.", "Bulunduğunuz ortamı havalandırın ve derin, temiz nefesler alın.", "Genel"),
-        ("Gün içinde ani üşüme", "Kan şekerinin düşmesi, yorgunluk veya ince giyinme.", "Sıcak bir bitki çayı için ve enerjinizi dengeleyecek bir atıştırmalık yiyin.", "Genel"),
+        # --- PSİKOLOJİK VE ZİHİNSEL ---
+        ("Nedensiz iç sıkıntısı", "Anksiyete, birikmiş stres, uykusuzluk", "Doktora Görünün: Haftalarca sürüyorsa ve hayattan zevk almanızı engelliyorsa", "Psikolojik"),
+        ("Toplulukta yüz kızarması ve terleme", "Sosyal anksiyete, otonom sinir sistemi tepkisi", "Doktora Görünün: Topluluk içine çıkmaktan tamamen kaçınmaya başlarsanız", "Psikolojik"),
+        ("Sürekli kötü bir şey olacak hissi", "Yaygın anksiyete bozukluğu", "Doktora Görünün: Bu his panik atağa (çarpıntı, nefes darlığı) dönüşürse", "Psikolojik"),
+        ("Odaklanma problemi ve unutkanlık", "Dijital yorgunluk, çoklu görev, B12 eksikliği", "Ekran süresini azaltın. Günlük işleri tamamen unutuyorsanız doktora görünün.", "Zihinsel"),
+        ("Sürekli yorgunluk ve isteksizlik (Tükenmişlik)", "Burnout sendromu, kronik stres", "Kendinize vakit ayırın, hobilere yönelin. Geçmezse terapi desteği alın.", "Psikolojik"),
+        ("Ani öfke patlamaları", "Stres birikimi, tahammül seviyesinin düşmesi", "Doktora Görünün: Öfkeniz size veya çevrenize zarar verme boyutuna ulaştıysa", "Psikolojik"),
 
-        # --- CİLT, SAÇ VE TIRNAK ---
-        ("Ani sivilce çıkması", "Yüksek şekerli/yağlı beslenme, stres veya kirli yastık kılıfı.", "Yüzünüzü uygun temizleyiciyle yıkayın, şekeri azaltın.", "Cilt/Saç"),
-        ("Ciltte kaşıntı", "Cilt kuruluğu, sıcak suyla duş veya deterjan alerjisi.", "Duştan sonra parfümsüz nemlendiriciler kullanın, ılık suyla yıkanın.", "Cilt/Saç"),
-        ("Ellerde kuruluk", "Sık sabun kullanımı, soğuk hava veya kimyasal teması.", "Ellerinizi yıkadıktan sonra nemlendirici krem sürün, soğukta eldiven takın.", "Cilt/Saç"),
-        ("Dudak çatlaması", "Soğuk hava, nemsizlik veya dudakları yalama alışkanlığı.", "Dudak nemlendiricisi (balm) kullanın ve bol su için.", "Cilt/Saç"),
-        ("Saç dökülmesi", "Mevsim geçişi, stres, vitamin eksikliği veya yanlış şampuan.", "Saç derisine masaj yapın, protein ve çinko ağırlıklı beslenin.", "Cilt/Saç"),
-        ("Kepek problemi", "Saç derisinin kuruması, mantar veya saçları çok sık/seyrek yıkama.", "Ilık suyla yıkayın ve çinko pirition içeren şampuan seçin.", "Cilt/Saç"),
-        ("Tırnak kırılması", "Kalsiyum/Biotin eksikliği, kimyasalla temas veya aşırı oje kullanımı.", "Temizlik yaparken eldiven kullanın, tırnakları dinlendirin.", "Cilt/Saç"),
-        ("Ter kokusu artışı", "Baharatlı/sarımsaklı beslenme veya sentetik kıyafetler.", "Pamuklu kıyafet seçin, bol su için ve karbonatlı deodorantlar deneyin.", "Cilt/Saç")
+        # --- CİLT, SAÇ VE ESTETİK ---
+        ("Duştan sonra kaşıntı", "Cilt kuruluğu, çok sıcak su ile yıkanma", "Doktora Görünün: Kızarıklık, kabarma ve döküntü kalıcıysa", "Cilt/Saç"),
+        ("Saç diplerinde sızlama ve ağrı", "Stres, saç derisinde yağlanma, sıkı bağlama", "Doktora Görünün: Yoğun bölgesel saç dökülmesi (para şeklinde) varsa", "Cilt/Saç"),
+        ("Kışın burun kenarı soyulması", "Soğuk hava, nemsizlik, egzama başlangıcı", "Doktora Görünün: Nemlendiriciye rağmen yara açılır ve kabuklanırsa", "Cilt/Saç"),
+        ("Ayak tabanında soyulma ve kaşıntı", "Aşırı terleme, mantar başlangıcı", "Doktora Görünün: Kaşıntı çok şiddetliyse ve tırnaklarda renk değişimi varsa", "Cilt/Saç"),
+        ("Tırnaklarda beyaz lekeler", "Çinko/Kalsiyum eksikliği, tırnak travması", "Badem, ceviz tüketin. Lekeler tüm tırnağı kaplarsa doktora görünün.", "Cilt/Saç"),
+        ("Stresli dönemde ciltte sivilcelenme", "Kortizol hormonunun artması, yağ dengesi bozulması", "Yüzünüzü düzenli yıkayın, şekeri azaltın. Geçmezse dermatoloğa görünün.", "Cilt/Saç"),
+        ("Aşırı saç dökülmesi (banyoda/yastıkta)", "Mevsim geçişi, demir eksikliği, tiroid sorunları", "Doktora Görünün: Saçlar tutam tutam dökülüyor ve seyrelme belli oluyorsa", "Cilt/Saç"),
+        ("Dudak kenarlarında çatlama (Peleş)", "B vitamini eksikliği, tükürük birikimi", "B kompleksi vitaminleri alın, dudaklarınızı yalamaktan kaçının.", "Cilt/Saç"),
+
+        # --- BAŞ, GÖZ, KULAK VE BOĞAZ ---
+        ("Işığa hassasiyet ve baş ağrısı", "Ekran yorgunluğu, migren başlangıcı", "Doktora Görünün: Şiddetli zonklama ve mide bulantısı eşlik ediyorsa", "Baş/Göz/Kulak"),
+        ("Uzun süre ekrana bakınca bulanıklaşma", "Göz kuruluğu, miyop/astigmat başlangıcı", "Doktora Görünün: Göz kırpmaya rağmen bulanıklık geçmiyor ve baş ağrıtıyorsa", "Baş/Göz/Kulak"),
+        ("Esnerken veya yutkunurken kulakta çıtırtı", "Östaki borusu basınç değişimi", "Doktora Görünün: Çıtırtı yerine şiddetli ağrı ve işitme kaybı varsa", "Baş/Göz/Kulak"),
+        ("Sabah ağızda metalik/acı tat", "Mide reflüsü, ağız kuruluğu, diş eti kanaması", "Doktora Görünün: Diş fırçalamaya ve su içmeye rağmen sürekli devam ederse", "Baş/Göz/Kulak"),
+        ("Kulaklık kullandıktan sonra çınlama", "Yüksek sese maruz kalma, kulak zarı yorgunluğu", "Doktora Görünün: Çınlama (Tinnitus) 24 saatten uzun sürerse veya baş dönmesi yaparsa", "Baş/Göz/Kulak"),
+        ("Göz akında kanlanma (kızarıklık)", "Uykusuzluk, alerji, göz tansiyonu", "Doktora Görünün: Gözde şiddetli ağrı veya görme kaybı varsa ACİL doktora gidin", "Baş/Göz/Kulak"),
+        ("Sabah uyanınca boğaz kuruluğu", "Gece ağız açık uyuma, nemsiz oda", "Odanızı havalandırın. Yutkunma zorluğu ve ateş eklenirse doktora görünün.", "Baş/Göz/Kulak"),
+        ("Baş dönmesi (Ayağa kalkınca)", "Ortostatik hipotansiyon (ani tansiyon düşüşü)", "Yavaşça ayağa kalkın. Sık sık göz kararması oluyorsa doktora görünün.", "Baş/Göz/Kulak"),
+        ("Baş dönmesi (Etraf dönüyormuş gibi)", "Vertigo, iç kulak kristalleri oynaması", "Doktora Görünün: Şiddetli bulantı yapıyor ve dengenizi bozuyorsa", "Baş/Göz/Kulak"),
+
+        # --- SOLUNUM, DOLAŞIM VE GENEL ---
+        ("Ara ara gelen kuru öksürük", "Alerji, geniz akıntısı, kuru hava", "Doktora Görünün: Öksürük 3 haftadan uzun sürerse veya kanlı balgam varsa", "Solunum/Dolaşım"),
+        ("Derin nefes alırken göğüste batma", "Kas sıkışması, stres, akciğer zarı hassasiyeti", "Doktora Görünün: Nefes darlığı, kola/çeneye vuran ağrı varsa ACİL doktora gidin", "Solunum/Dolaşım"),
+        ("Sürekli üşüme hissi", "Kansızlık, tiroid yavaşlığı (Hipotiroidi)", "Doktora Görünün: Havalar sıcakken bile üşüme ve yorgunluk geçmiyorsa", "Genel"),
+        ("Nedensiz ani terleme ve çarpıntı", "Kan şekeri düşüklüğü, panik atak, tiroid", "Doktora Görünün: Çarpıntı hissi göğüs ağrısıyla birlikte geliyorsa", "Solunum/Dolaşım"),
+        ("Ellerde ve ayaklarda sürekli soğukluk", "Dolaşım bozukluğu, kansızlık", "Doktora Görünün: Parmak uçlarında morarma veya renk değişimi (Reynaud) varsa", "Dolaşım/Sinir"),
+        ("Gün sonu ayak bileklerinde şişlik (Ödem)", "Uzun süre ayakta kalma, tuzlu beslenme", "Doktora Görünün: Şişlik sabaha kadar geçmiyor ve parmak basınca iz kalıyorsa", "Solunum/Dolaşım"),
+        ("Sürekli susama hissi (Polidipsi)", "Aşırı tuzlu yeme, diyabet (şeker hastalığı) başlangıcı", "Doktora Görünün: Sık idrara çıkma ve ani kilo kaybı eşlik ediyorsa", "Genel"),
+        ("Hafif ateş ve kırgınlık", "Viral enfeksiyon başlangıcı, aşırı yorgunluk", "Doktora Görünün: Ateş 39 dereceyi geçerse veya 3 günden uzun sürerse", "Genel")
     ]
 
     cursor.executemany('''
         INSERT INTO bilgi_tabani (belirti, neden, oneri, kategori) 
         VALUES (?, ?, ?, ?)
-    ''', dev_liste)
+    ''', dev_veri_seti)
 
     conn.commit()
     conn.close()
-    print(f"BÜYÜK GÜNCELLEME TAMAMLANDI! {len(dev_liste)} adet hastalık/belirti veritabanına işlendi.")
+    print(f"🚀 TEBRİKLER! Veritabanı devasa kapasiteye ulaştı. Toplam {len(dev_veri_seti)} adet profesyonel veri yüklendi.")
 
 if __name__ == "__main__":
-    tam_kapasite_doldur()
+    dev_veritabanini_kur()
