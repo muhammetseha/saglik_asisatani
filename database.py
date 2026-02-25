@@ -26,11 +26,25 @@ def puan_ekle(kayit_id, verilen_puan):
         conn.close()
 
 def geri_bildirim_kaydet(kullanici_metni, durum, yapay_zeka_cevabi="Yok"):
-    import sqlite3
-    conn = sqlite3.connect('saglik_asistani.db')
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS geri_bildirimler (id INTEGER PRIMARY KEY AUTOINCREMENT, kullanici_metni TEXT, durum TEXT, yapay_zeka_cevabi TEXT, tarih DATETIME DEFAULT CURRENT_TIMESTAMP)')
-    cursor.execute('INSERT INTO geri_bildirimler (kullanici_metni, durum, yapay_zeka_cevabi) VALUES (?, ?, ?)', (kullanici_metni, durum, yapay_zeka_cevabi))
+    
+    # Eğer "geri_bildirimler" tablosu yoksa otomatik oluşturur (Sistemi bozmaz)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS geri_bildirimler (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            kullanici_metni TEXT NOT NULL,
+            durum TEXT NOT NULL,
+            yapay_zeka_cevabi TEXT,
+            tarih DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    cursor.execute('''
+        INSERT INTO geri_bildirimler (kullanici_metni, durum, yapay_zeka_cevabi) 
+        VALUES (?, ?, ?)
+    ''', (kullanici_metni, durum, yapay_zeka_cevabi))
+    
     conn.commit()
     conn.close()
 
@@ -50,4 +64,5 @@ def geri_bildirimleri_getir():
     df = pd.read_sql_query("SELECT * FROM geri_bildirimler ORDER BY id DESC", conn)
     conn.close()
     return df
+
 
