@@ -153,3 +153,4 @@ with tab3:
             
     elif girilen_sifre != "": 
         st.error("❌ Hatalı Şifre! Yetkisiz Erişim.")
+
