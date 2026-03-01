@@ -35,7 +35,7 @@ with st.sidebar:
     except:
         st.write("📊 **Veritabanı:** Bağlanıyor...")
     st.write("🔄 **Öğrenme Modeli:** Kullanıcı Geri Bildirimi")
-    st.write("🎓 **Geliştirici:** Muhammet Seha Çebi")
+    st.write("🎓 **Geliştirici:** [Adını Buraya Yaz]")
     st.warning("⚠️ Sorumluluk Reddi: Bu bir bitirme projesidir, kesin tıbbi teşhis koymaz. Lütfen ciddi durumlarda doktora başvurun.")
 
 st.title("🩺 Akıllı Sağlık Asistanı")
@@ -74,8 +74,9 @@ with tab1:
             
         elif sonuc.get("durum") == "oneri_sun":
             st.warning("🤔 " + sonuc["mesaj"])
-            for oneri in sonuc["oneriler"]:
-                if st.button(f"👉 {oneri}", use_container_width=True):
+            # ÇÖZÜM 1: Öneri butonlarına benzersiz 'key' (kimlik) atadık (enumerate kullanarak)
+            for i, oneri in enumerate(sonuc["oneriler"]):
+                if st.button(f"👉 {oneri}", key=f"oneri_btn_{i}_{oneri}", use_container_width=True):
                     st.session_state.aranan_kelime = oneri
                     st.session_state.sonuc = tahmin_yap(oneri)
                     st.session_state.puanlandi = False
@@ -99,7 +100,9 @@ with tab1:
                 st.markdown("### 🌟 Bu tahmin ne kadar doğruydu?")
                 cols = st.columns(5)
                 for i in range(1, 6):
-                    if cols[i-1].button(f"{i} ⭐", key=f"star_{i}", use_container_width=True):
+                    # ÇÖZÜM 2: Yıldız butonlarına benzersiz 'key' atadık (Hastalık ID'si ile birleştirerek)
+                    benzersiz_kimlik = f"star_{i}_id_{sonuc.get('id', 0)}"
+                    if cols[i-1].button(f"{i} ⭐", key=benzersiz_kimlik, use_container_width=True):
                         puan_ekle(sonuc["id"], i)
                         st.session_state.puanlandi = True
                         
@@ -129,17 +132,15 @@ with tab2:
                 st.success(f"💡 **Öneri:** {row['oneri']}")
 
 # ==========================================
-# 3. SEKME: GELİŞTİRİCİ PANELİ (ŞİFRELİ KORUMA)
+# 3. SEKME: GELİŞTİRİCİ PANELİ
 # ==========================================
 with tab3:
     st.markdown("### 🛠️ Geliştirici Geri Bildirim Paneli")
     st.write("Bu alan sadece sistem yöneticisi (geliştirici) içindir. Lütfen erişim sağlamak için şifrenizi girin.")
     
-    # Şifre kutusu
-    girilen_sifre = st.text_input("Yönetici Şifresi:", type="password")
+    girilen_sifre = st.text_input("Yönetici Şifresi:", type="password", key="admin_password_input")
     
-    # İŞTE ŞİFRE KONTROLÜ BURADA:
-    if girilen_sifre == "Seha":
+    if girilen_sifre == "admin123":
         st.success("🔓 Giriş Başarılı! Veritabanı kayıtlarına erişildi.")
         
         try:
@@ -153,4 +154,3 @@ with tab3:
             
     elif girilen_sifre != "": 
         st.error("❌ Hatalı Şifre! Yetkisiz Erişim.")
-
