@@ -35,7 +35,7 @@ with st.sidebar:
     except:
         st.write("📊 **Veritabanı:** Bağlanıyor...")
     st.write("🔄 **Öğrenme Modeli:** Kullanıcı Geri Bildirimi")
-    st.write("🎓 **Geliştirici:** [Adını Buraya Yaz]")
+    st.write("🎓 **Geliştirici:** Muhammmet Seha Çebi")
     st.warning("⚠️ Sorumluluk Reddi: Bu bir bitirme projesidir, kesin tıbbi teşhis koymaz. Lütfen ciddi durumlarda doktora başvurun.")
 
 st.title("🩺 Akıllı Sağlık Asistanı")
@@ -154,3 +154,4 @@ with tab3:
             
     elif girilen_sifre != "": 
         st.error("❌ Hatalı Şifre! Yetkisiz Erişim.")
+
