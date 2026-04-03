@@ -7,13 +7,37 @@ from database import puan_ekle, geri_bildirim_kaydet, geri_bildirimleri_getir
 
 st.set_page_config(page_title="Yapay Zeka Sağlık Asistanı", page_icon="🩺", layout="centered")
 
-# Hafıza Yönetimi
+# --- HAFIZA YÖNETİMİ ---
 if 'sonuc' not in st.session_state:
     st.session_state.sonuc = None
 if 'puanlandi' not in st.session_state:
     st.session_state.puanlandi = False
 if 'aranan_kelime' not in st.session_state:
     st.session_state.aranan_kelime = ""
+
+# --- YENİ: POP-UP (DIALOG) FONKSİYONU ---
+@st.dialog("🌟 Yapay Zekayı Değerlendirin")
+def puanlama_popup(sonuc_id, aranan_kelime, bulunan_belirti):
+    st.markdown(f"**Sizin Şikayetiniz:** {aranan_kelime}")
+    st.markdown(f"**Benim Tahminim:** {bulunan_belirti}")
+    st.write("---")
+    st.write("Bu tahmin sizin için ne kadar doğruydu? Lütfen 1 ile 5 arasında puan verin:")
+    
+    cols = st.columns(5)
+    for i in range(1, 6):
+        benzersiz_kimlik = f"popup_star_{i}_id_{sonuc_id}"
+        if cols[i-1].button(f"{i} ⭐", key=benzersiz_kimlik, use_container_width=True):
+            puan_ekle(sonuc_id, i)
+            st.session_state.puanlandi = True
+            
+            # 1 Yıldız verilirse sisteme kaydet
+            if i == 1:
+                geri_bildirim_kaydet(
+                    kullanici_metni=aranan_kelime, 
+                    durum="1 Yıldız Aldı (Hatalı Tahmin)", 
+                    yapay_zeka_cevabi=bulunan_belirti
+                )
+            st.rerun()
 
 def verileri_kategoriye_gore_getir(secilen_kategori=None):
     conn = sqlite3.connect('saglik_asistani.db')
@@ -35,7 +59,7 @@ with st.sidebar:
     except:
         st.write("📊 **Veritabanı:** Bağlanıyor...")
     st.write("🔄 **Öğrenme Modeli:** Kullanıcı Geri Bildirimi")
-    st.write("🎓 **Geliştirici:** Muhammmet Seha Çebi")
+    st.write("🎓 **Geliştirici:** [Adını Buraya Yaz]")
     st.warning("⚠️ Sorumluluk Reddi: Bu bir bitirme projesidir, kesin tıbbi teşhis koymaz. Lütfen ciddi durumlarda doktora başvurun.")
 
 st.title("🩺 Akıllı Sağlık Asistanı")
@@ -74,7 +98,6 @@ with tab1:
             
         elif sonuc.get("durum") == "oneri_sun":
             st.warning("🤔 " + sonuc["mesaj"])
-            # ÇÖZÜM 1: Öneri butonlarına benzersiz 'key' (kimlik) atadık (enumerate kullanarak)
             for i, oneri in enumerate(sonuc["oneriler"]):
                 if st.button(f"👉 {oneri}", key=f"oneri_btn_{i}_{oneri}", use_container_width=True):
                     st.session_state.aranan_kelime = oneri
@@ -96,23 +119,11 @@ with tab1:
                 else:
                     st.markdown(f"**💡 Önerimiz:** {sonuc['oneri']}")
             
+            # --- POP-UP TETİKLEYİCİ BUTON ---
             if not st.session_state.puanlandi:
-                st.markdown("### 🌟 Bu tahmin ne kadar doğruydu?")
-                cols = st.columns(5)
-                for i in range(1, 6):
-                    # ÇÖZÜM 2: Yıldız butonlarına benzersiz 'key' atadık (Hastalık ID'si ile birleştirerek)
-                    benzersiz_kimlik = f"star_{i}_id_{sonuc.get('id', 0)}"
-                    if cols[i-1].button(f"{i} ⭐", key=benzersiz_kimlik, use_container_width=True):
-                        puan_ekle(sonuc["id"], i)
-                        st.session_state.puanlandi = True
-                        
-                        if i == 1:
-                            geri_bildirim_kaydet(
-                                kullanici_metni=st.session_state.aranan_kelime, 
-                                durum="1 Yıldız Aldı (Hatalı Tahmin)", 
-                                yapay_zeka_cevabi=sonuc["belirti"]
-                            )
-                        st.rerun()
+                st.write("") # Boşluk
+                if st.button("🌟 Yapay Zeka Tahminini Değerlendir", type="primary", use_container_width=True):
+                    puanlama_popup(sonuc["id"], st.session_state.aranan_kelime, sonuc["belirti"])
             else:
                 st.info("💖 Geri bildiriminiz veritabanına işlendi. Teşekkürler!")
 
@@ -154,4 +165,3 @@ with tab3:
             
     elif girilen_sifre != "": 
         st.error("❌ Hatalı Şifre! Yetkisiz Erişim.")
-
