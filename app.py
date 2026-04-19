@@ -59,7 +59,7 @@ with st.sidebar:
     except:
         st.write("📊 **Veritabanı:** Bağlanıyor...")
     st.write("🔄 **Öğrenme Modeli:** Kullanıcı Geri Bildirimi")
-    st.write("🎓 **Geliştirici:** [Adını Buraya Yaz]")
+    st.write("🎓 **Geliştirici:** Muhammet Seha Çebi")
     st.warning("⚠️ Sorumluluk Reddi: Bu bir bitirme projesidir, kesin tıbbi teşhis koymaz. Lütfen ciddi durumlarda doktora başvurun.")
 
 st.title("🩺 Akıllı Sağlık Asistanı")
@@ -118,29 +118,23 @@ with tab1:
                     st.error(f"🚨 **Uyarı:** {sonuc['oneri']}")
                 else:
                     st.markdown(f"**💡 Önerimiz:** {sonuc['oneri']}")
-            
-            # --- POP-UP TETİKLEYİCİ BUTON ---
+
+# --- POP-UP TETİKLEYİCİ BUTON (DİKKAT ÇEKİCİ VERSİYON) ---
             if not st.session_state.puanlandi:
-                st.write("") # Boşluk
-                if st.button("🌟 Yapay Zeka Tahminini Değerlendir", type="primary", use_container_width=True):
+                # 1. TAKTİK: Ekranın sağ altından kayarak giren dinamik bildirim (Gözü aşağı çeker)
+                st.toast("Lütfen tahmini değerlendirmeyi unutmayın! 👇", icon="🌟")
+                st.toast("Geri bildiriminiz veritabanını geliştirecek. 🤖", icon="📈")
+                
+                # 2. TAKTİK: Gözden kaçması imkansız hale getirilmiş UI tasarımı
+                st.write("")
+                st.write("---")
+                st.error("👇 **YAPAY ZEKANIN ÖĞRENMESİNE YARDIMCI OLUN** 👇")
+                
+                # Butonu devasa ve tamamen dikkat çekici hale getirdik
+                if st.button("🚨 TAHMİNİ PUANLA VE SİSTEMİ GELİŞTİR 🚨", type="primary", use_container_width=True):
                     puanlama_popup(sonuc["id"], st.session_state.aranan_kelime, sonuc["belirti"])
             else:
-                st.info("💖 Geri bildiriminiz veritabanına işlendi. Teşekkürler!")
-
-with tab2:
-    st.markdown("### 📂 Bilgi Tabanını Keşfedin")
-    df_tum = verileri_kategoriye_gore_getir()
-    kategori_listesi = ["Tümü"] + sorted(df_tum['kategori'].dropna().unique().tolist())
-    secilen_kat = st.selectbox("Kategori Seçin:", kategori_listesi)
-    filtrelenmis_df = verileri_kategoriye_gore_getir(secilen_kat)
-    
-    for index, row in filtrelenmis_df.iterrows():
-        with st.expander(f"📌 {row['belirti']}"):
-            st.markdown(f"**⚠️ Olası Neden:** {row['neden']}")
-            if "Doktora Görünün" in row['oneri']:
-                st.error(f"🚨 **Ne Zaman Ciddiye Alınmalı:** {row['oneri'].replace('Doktora Görünün: ', '')}")
-            else:
-                st.success(f"💡 **Öneri:** {row['oneri']}")
+                st.success("💖 Harika! Geri bildiriminiz veritabanına işlendi. Teşekkürler!")
 
 # ==========================================
 # 3. SEKME: GELİŞTİRİCİ PANELİ
